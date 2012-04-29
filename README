@@ -7,4 +7,4 @@ http://www.cis.udel.edu/~decker/courses/681s07/prog1.html
 To run from erlang shell:
  1. cd("repo_directory").
  2. make:all([load]).
- 3. ts_uni_test:unit_test().
+ 3. ts_unit_test:unit_test().
