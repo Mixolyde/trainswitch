@@ -2,3 +2,8 @@
 *.beam
 *.*.swp
 *.dump
+*.eunit
+*.test
+*.plt
+ebin
+doc

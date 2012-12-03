@@ -4,7 +4,7 @@
 %%% spawn a thread for each next state and test them all
 %%% not consistent or precisely reproducable
 -module(dls_proc).
--include("trainswitch.hrl").
+-include("../include/trainswitch.hrl").
 
 -compile([debug_info, export_all]).
 
@@ -39,7 +39,7 @@ dls_process(
     Parent_id ! {found, SState, self()};
 %then see if we hit bottom
 dls_process(_Problem,
-    #solution_state{depth = Depth}, Limit, Parent_id) when Depth >= Limit ->
+    #solution_state{moves = Moves}, Limit, Parent_id) when length(Moves) >= Limit ->
     Parent_id ! {not_found, max_depth_reached, self()};
 %else generate the next possible states and iterate through them
 dls_process(Problem, State, Limit, Parent_id) ->

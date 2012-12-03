@@ -1,6 +1,6 @@
 %%%----FILE ts_util.hrml----
 -module(ts_util).
--include("trainswitch.hrl").
+-include("../include/trainswitch.hrl").
 
 -compile([debug_info, export_all]).
 
@@ -17,13 +17,12 @@ cars_on_track(Track, TrackList) ->
 
 new_solution(Problem) ->
     #solution_state{state = Problem#problem.init_state,
-        moves = [], depth = 0} .
+        moves = []} .
 
 update_solution(Solution_state, Move) ->
     #solution_state{
         state = trainswitch:apply_move(Move, Solution_state#solution_state.state),
-        moves = [Move | Solution_state#solution_state.moves],
-        depth = Solution_state#solution_state.depth + 1} .
+        moves = [Move | Solution_state#solution_state.moves]} .
 
 %% move the first element of front to the last element of back and return both new lists
 move_front_to_back([Front | Rest], Back ) ->
@@ -52,7 +51,7 @@ update_tracks(State, [{UpdateTrack, UpdateList} | RestUpdate]) ->
 
 %%print the path of moves that lead from the initial state to the current one in this solution step
 print_solution_path(Problem, Solution_state) ->
-    io:format("Solution state at depth: ~w~n", [Solution_state#solution_state.depth]),
+    io:format("Solution state at depth: ~w~n", [length(Solution_state#solution_state.moves)]),
     io:format("To go from ~w to~n", [Problem#problem.init_state]),
     io:format("~w~n", [Solution_state#solution_state.state]),
     io:format("Apply: ~w~n", [lists:reverse(Solution_state#solution_state.moves)]).

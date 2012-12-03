@@ -1,18 +1,17 @@
 %%% train switch yard AI programming assignment
 %%% assignment: http://www.cis.udel.edu/~decker/courses/681s07/prog1.html
 %%% cd ("C:/Users/bwilliams/Dropbox/dev/erl").
-%%% c(trainswitch).
 
 -module(trainswitch).
 -author("Brian E. Williams").
 -compile([debug_info, export_all]).
 -import(ts_util, [cars_on_track/2, move_front_to_back/2, move_back_to_front/2,
   update_tracks/2, print_solution_path/2, new_solution/1, update_solution/2]).
--include("trainswitch.hrl").
+-include("../include/trainswitch.hrl").
 
 %%Homework Problem 1
 %% returns all possible moves for a yard in a given state based on the
-%% "generate and test" ai paradigm
+%% "generate and test" A.I. paradigm
 possible_moves(Yard, State) ->
     lists:filter(
         fun(Move) -> not is_illegal_move(Move, Yard, State) end, generate_all_moves(Yard) ).
@@ -76,14 +75,9 @@ ids_recursive(Problem, Limit) ->
     end.
 
 %% depth limited search
-%% starts a depth limited search, prints solution if found
+%% starts a depth limited search
 depth_limited_search(Problem, Limit) ->
-    case dls_recursive(Problem, new_solution(Problem), Limit) of
-        {found, FoundState} ->
-            {found, FoundState};
-        Other ->
-            Other
-    end.
+    dls_recursive(Problem, new_solution(Problem), Limit).
 
 %first try to match the goal state
 dls_recursive(
@@ -94,13 +88,13 @@ dls_recursive(
     {found, SState};
 %then see if we hit bottom
 dls_recursive(_Problem,
-    #solution_state{depth = Depth}, Limit) when Depth >= Limit ->
+    #solution_state{moves = Moves}, Limit) when length(Moves) >= Limit ->
     {not_found, max_depth_reached};
 %else generate the next possible states and iterate through them
 dls_recursive(Problem, State, Limit) ->
     %expand the solution with all possible moves and go deeper
     New_SStates = expand_solution(Problem, State),
-    %try each one until it passes
+    %try each one until it passes or return out_of_moves
     dls_recurse_with_cut_off(Problem, New_SStates, Limit).
 
 %% expand solution

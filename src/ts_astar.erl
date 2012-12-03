@@ -6,7 +6,7 @@
   update_tracks/2, print_solution_path/2, new_solution/1, update_solution/2]).
 -import(ts_util, [dijkstra_all/1, locate_car/2]).
 -import(trainswitch, [possible_moves/2, apply_move/2]).
--include("trainswitch.hrl").
+-include("../include/trainswitch.hrl").
 
 -compile([debug_info, export_all]).
 
@@ -181,14 +181,13 @@ dijkstra_sum_heuristic(State, Goal, Yard) ->
             Distance  + TrackSum
         end, 0, Cars)
         + Sum end, 0, Goal)
-        + out_of_order_score(State, Goal, Yard)
-        .
+        + out_of_order_score(State, Goal, Yard).
 
 %% AStar util stuff
 new_solution_astar(#problem{init_state = Init, goal_state = _Goal, yard = _Yard}, HFun) ->
     #astar_solution_state{solution_state =
         #solution_state{state = Init,
-            moves = [], depth = 0},
+            moves = []},
         fvalue = HFun(Init) } .
 
 %% expand solution
@@ -197,13 +196,12 @@ expand_astar_solution(Problem, Astar_Solution_State, HFunOfState) ->
         possible_moves(Problem#problem.yard, Astar_Solution_State#astar_solution_state.solution_state#solution_state.state) ).
 
 update_astar_solution(Astar_Solution_State, Move, HFunOfState) ->
-    Depth = Astar_Solution_State#astar_solution_state.solution_state#solution_state.depth + 1,
+    Depth = length(Astar_Solution_State#astar_solution_state.solution_state#solution_state.moves) + 1,
     State = apply_move(Move, Astar_Solution_State#astar_solution_state.solution_state#solution_state.state),
     #astar_solution_state{solution_state =
         #solution_state{
             state = State,
-            moves = [Move] ++ Astar_Solution_State#astar_solution_state.solution_state#solution_state.moves,
-            depth = Depth},
+            moves = [Move] ++ Astar_Solution_State#astar_solution_state.solution_state#solution_state.moves},
         fvalue = Depth + HFunOfState(State) }.
 
 equal_astar_states( #astar_solution_state{solution_state = #solution_state{state = State}},
@@ -228,7 +226,7 @@ insert_astar_state(InsertState, LowerStates, [CurrentState | RestStates] ) ->
 %%print the path of moves that lead from the initial state to the current one in this solution step
 print_astar_solution_path(Problem, Solution_state) ->
     io:format("Solution state at depth: ~p with fvalue ~p~n",
-    [Solution_state#astar_solution_state.solution_state#solution_state.depth,
+    [length(Solution_state#astar_solution_state.solution_state#solution_state.moves),
      Solution_state#astar_solution_state.fvalue]),
     io:format("To go from ~p to~n", [Problem#problem.init_state]),
     io:format("~p~n", [Solution_state#astar_solution_state.solution_state#solution_state.state]),

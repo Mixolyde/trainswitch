@@ -8,7 +8,7 @@
 -record(problem, {yard = #yard{}, init_state = #state{}, goal_state = #state{}}).
 
 %%% solution states
--record(solution_state, {state = #state{}, moves, depth}).
+-record(solution_state, {state = #state{}, moves}).
 -record(astar_solution_state, {solution_state = #solution_state{}, fvalue}).
 
 %%% problems
