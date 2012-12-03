@@ -21,7 +21,7 @@
     {"Dijkstra Problem 5",            ts_astar, astar_search_dijkstra,         [?PROBLEM5], 5},
     {"Not on Goal Problem 2",         ts_astar, astar_search_not_on_goal,      [?PROBLEM2], 3},
     {"Dijkstra Problem 2",            ts_astar, astar_search_dijkstra,         [?PROBLEM2], 3},
-    {"Not on Goal Problem 1",         ts_astar, astar_search_not_on_goal,      [?PROBLEM1], 1},
+   %{"Not on Goal Problem 1",         ts_astar, astar_search_not_on_goal,      [?PROBLEM1], 1},
     {"Dijkstra Problem 1",            ts_astar, astar_search_dijkstra,         [?PROBLEM1], 1}
    ]).
 
