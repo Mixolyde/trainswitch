@@ -31,6 +31,9 @@ astar_search(Problem, HOfStateFun) ->
             lists:reverse(FoundSolution#astar_solution_state.solution_state#solution_state.moves)
     end.
 
+astar_search_out_of_order(Problem) ->
+    astar_search(Problem, fun ts_astar:out_of_order_score/3).
+
 astar_search_not_on_goal(Problem) ->
     astar_search(Problem, fun ts_astar:not_on_goal_count/3).
 
