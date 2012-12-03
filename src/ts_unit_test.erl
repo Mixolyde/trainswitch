@@ -63,11 +63,11 @@ unit_test() ->
     SState1 = new_solution(?PROBLEM3),
     SState2 = update_solution(SState1, {left, t2, t1}),
     SState3 = update_solution(SState2, {left, t3, t1}),
-    {found, SState3} = dls_recursive(?PROBLEM3, SState3, 0),
-    {not_found, max_depth_reached} = dls_recursive(?PROBLEM3, SState2, 1),
+    {found, SState3} = dls_recursive(?PROBLEM3, [SState3], 0),
+    {not_found} = dls_recursive(?PROBLEM3, [SState2], 1),
     io:format("SState expansion: ~w~n", [expand_solution(?PROBLEM3, SState2)] ),
-    {not_found, max_depth_reached} = depth_limited_search(?PROBLEM3, 0),
-    {not_found, out_of_moves} = depth_limited_search(?PROBLEM3, 1),
+    {not_found} = depth_limited_search(?PROBLEM3, 0),
+    {not_found} = depth_limited_search(?PROBLEM3, 1),
     {found, PrintState1 = {solution_state,[{t1,[engine,a,b]}], Sol_Path}} =
         depth_limited_search(?PROBLEM3, 2),
 	% [{left,t3,t1}, {left,t2,t1}]

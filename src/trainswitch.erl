@@ -77,41 +77,31 @@ ids_recursive(Problem, Limit) ->
 %% depth limited search
 %% starts a depth limited search
 depth_limited_search(Problem, Limit) ->
-    dls_recursive(Problem, new_solution(Problem), Limit).
+    dls_recursive(Problem, [new_solution(Problem)], Limit).
 
+%recurse over the generated states as a stack
+%if we empty the stack return not_found
+dls_recursive(_Problem, [], _Limit) ->
+    {not_found};
 %first try to match the goal state
 dls_recursive(
     #problem{goal_state = Goal},
-    #solution_state{state = Goal} = SState,
+    [#solution_state{state = Goal} = SState | _Rest],
     _Limit) ->
     %io:format("Goals match: ~w~n", [Goal] ),
     {found, SState};
 %then see if we hit bottom
-dls_recursive(_Problem,
-    #solution_state{moves = Moves}, Limit) when length(Moves) >= Limit ->
-    {not_found, max_depth_reached};
+dls_recursive(Problem,
+    [#solution_state{moves = Moves} | Rest], Limit) when length(Moves) >= Limit ->
+    %{not_found, max_depth_reached},
+	dls_recursive(Problem, Rest, Limit);
 %else generate the next possible states and iterate through them
-dls_recursive(Problem, State, Limit) ->
+dls_recursive(Problem, [First | Rest], Limit) ->
     %expand the solution with all possible moves and go deeper
-    New_SStates = expand_solution(Problem, State),
-    %try each one until it passes or return out_of_moves
-    dls_recurse_with_cut_off(Problem, New_SStates, Limit).
+    New_SStates = expand_solution(Problem, First),
+    dls_recursive(Problem, New_SStates ++ Rest, Limit).
 
 %% expand solution
 expand_solution(Problem, Solution_State) ->
     lists:map(fun(Move) -> update_solution(Solution_State, Move) end,
         possible_moves(Problem#problem.yard, Solution_State#solution_state.state) ).
-
-%recurse over the generated states as a stack
-%if we empty the stack return out of moves
-dls_recurse_with_cut_off(_Problem, [], _Limit) ->
-    {not_found, out_of_moves};
-%take the top state of the stack, if goal return immediately
-%else try the next move on the stack
-dls_recurse_with_cut_off(Problem, [SState | Rest], Limit) ->
-    case dls_recursive(Problem, SState, Limit) of
-        {found, FoundState} ->
-            {found, FoundState};
-        {not_found, _Reason}    ->
-            dls_recurse_with_cut_off(Problem, Rest, Limit)
-    end.
