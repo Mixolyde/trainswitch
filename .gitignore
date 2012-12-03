@@ -7,3 +7,4 @@
 *.plt
 ebin
 doc
+~*.*
