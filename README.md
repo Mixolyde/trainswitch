@@ -9,15 +9,15 @@ Running
 =======
 
 To run from the Erlang shell:
-1. `cd("path/to/repo/directory/trainswitch").`
-2. `code:add_path("ebin").`
-3. `make:all([load]).`
-4. `ts_unit_test:unit_test().`
-5. `ts_benchmark:benchmark().`
+ 1. `cd("path/to/repo/directory/trainswitch").`
+ 2. `code:add_path("ebin").`
+ 3. `make:all([load]).`
+ 4. `ts_unit_test:unit_test().`
+ 5. `ts_benchmark:benchmark().`
 
 Files
 =====
-The problem yard data structures and assignment problems are defined in 
+Data structures and assignment problems are defined in 
 `trainswitch.hrl`.
 
 `trainswitch.erl` has some of the utility functions that build-up to the solution as part
@@ -31,12 +31,12 @@ using a combination of dijkstra's algorithm for calculating distances from track
 and an out of order check that penalizes moves that would put cars on a track out of
 order from the goal state.
 
-`dls_proc.erl` was an attempt to solve the problem in a distributed fashion, but it hits the
-maximum process count of the system pretty early, not a good idea. Plan to refactor
-some day.
-
 `ts_unit_test.erl` contains a large list of unit test style assert statementss for just 
 about every method in the system.
 
 `ts_benchmark.erl` contains a few methods for running the searches and printing some timing
 benchmark results.
+
+`dls_proc.erl` was an attempt to solve the problem in a distributed fashion, but it hits the
+maximum process count of the system pretty early, not a good idea. Plan to refactor
+some day.
