@@ -17,11 +17,17 @@ gen_list(Max, Size, List) ->
 % appearing in both lists, and Count is the minimum of the amount
 % of times it appears in both lists.
 % intersection([1, 1, 1, 2, 2], [ 1, 1, 2, 3]) -> [{1, 2}, {2, 1}].
-intersection(List1, List2) when length(List1) > length(List2) ->
-	% build hash maps of the two lists
-    intersection_hashes(build_hash(List1), build_hash(List2));
 intersection(List1, List2) ->
-    intersection_hashes(build_hash(List2), build_hash(List1)).
+	% build hash maps of the two lists
+	Hash1 = build_hash(List1),
+	Hash2 = build_hash(List2),
+	Hash1IsLarger = dict:size(Hash1) > dict:size(Hash2), 
+	if
+		Hash1IsLarger ->
+    		intersection_hashes(build_hash(List1), build_hash(List2));
+		true ->
+			intersection_hashes(build_hash(List2), build_hash(List1))
+	end.
 
 % Takes the two hash maps and finds all the common entries
 intersection_hashes(BiggerDict, SmallerDict) ->
