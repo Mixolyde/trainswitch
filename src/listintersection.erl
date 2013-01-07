@@ -12,22 +12,22 @@ gen_list(Max, Size, List) ->
   Value = random:uniform(Max),
   gen_list(Max, Size - 1, [Value | List]).
 
-% Returns the intersection of two lists. The intersection is a 
+% Returns the intersection of two lists. The intersection is a
 % list of {Value, Count} records, where Value is the integer
 % appearing in both lists, and Count is the minimum of the amount
 % of times it appears in both lists.
 % intersection([1, 1, 1, 2, 2], [ 1, 1, 2, 3]) -> [{1, 2}, {2, 1}].
 intersection(List1, List2) ->
-	% build hash maps of the two lists
-	Hash1 = build_hash(List1),
-	Hash2 = build_hash(List2),
-	Hash1IsLarger = dict:size(Hash1) > dict:size(Hash2), 
-	if
-		Hash1IsLarger ->
-    		intersection_hashes(build_hash(List1), build_hash(List2));
-		true ->
-			intersection_hashes(build_hash(List2), build_hash(List1))
-	end.
+  % build hash maps of the two lists
+  Hash1 = build_hash(List1),
+  Hash2 = build_hash(List2),
+  Hash1IsLarger = dict:size(Hash1) > dict:size(Hash2),
+  if
+    Hash1IsLarger ->
+      intersection_hashes(Hash1, Hash2);
+    true ->
+      intersection_hashes(Hash2, Hash1)
+  end.
 
 % Takes the two hash maps and finds all the common entries
 intersection_hashes(BiggerDict, SmallerDict) ->
@@ -39,15 +39,15 @@ intersection_hashes(BiggerDict, SmallerDict) ->
   % the fold method applies a function to each key/value pair in the hash with
   % an accumulator
   dict:fold(
-	% fun(Key, Value, Accumulator)
+  % fun(Key, Value, Accumulator)
     fun(SmallerKey, SmallerValue, Intersection) ->
       case dict:find(SmallerKey, BiggerDict) of
         {ok, BiggerValue} ->
-            % if we find the key in the larger hash, add a tuple to the 
+            % if we find the key in the larger hash, add a tuple to the
             % intersection list
             [{SmallerKey, min(SmallerValue, BiggerValue)} | Intersection];
         error ->
-			% no match found, return the accumulator unchanged
+      % no match found, return the accumulator unchanged
             Intersection
       end
     end, [], SmallerDict). % start with an empty accumulator and iterate over
@@ -79,14 +79,14 @@ intersection_test() ->
   2 = length(intersection(TestList1, TestList3)),
 
   % should find 2 "1's" and 2 "2's" in this test
-  Result1 = intersection(TestList1 ++ TestList1, 
-						 TestList3 ++ TestList3 ++ TestList3),
+  Result1 = intersection(TestList1 ++ TestList1,
+             TestList3 ++ TestList3 ++ TestList3),
   2 = length(Result1),
   {1, 2} = lists:keyfind(1, 1, Result1),
   {2, 2} = lists:keyfind(2, 1, Result1),
 
-  2 = length(intersection(TestList3 ++ TestList3 ++ TestList3, 
-						  TestList1 ++ TestList1)),
+  2 = length(intersection(TestList3 ++ TestList3 ++ TestList3,
+              TestList1 ++ TestList1)),
   2 = length(intersection(TestList2, TestList3)),
   4 = length(intersection(TestList1 ++ TestList2, TestList3)),
   4 = length(intersection(TestList3, TestList2 ++ TestList1)),
